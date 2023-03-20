@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% for quack in quacks_show %}
+        <div>
+            <ul>
+                <li>{{ quack.id }}</li>
+                <li>{{ quack.createdAT | date }}</li>
+                <li>{{ quack.contend }}</li>
+            </ul>
+        </div>
+    {% endfor %}
+
+    <form action="{{ path('app_createquack') }}" method="POST">
+        <button type="submit">ADD</button>
+    </form>
+{% endblock %}
