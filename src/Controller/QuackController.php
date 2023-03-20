@@ -35,10 +35,10 @@ class QuackController extends AbstractController
         return $this->redirectToRoute('app_quack');
     }
 
-    #[Route('/{id}/delete', name: 'quack_delete')]
-    public function delete(Quack $id)
+    #[Route('/{quack}/delete', name: 'quack_delete')]
+    public function delete(Quack $quack, QuackRepository $quackRepository)
     {
-        dd($id);
+        $quackRepository->remove($quack, true);
         return $this->redirectToRoute('app_quack');
     }
 }

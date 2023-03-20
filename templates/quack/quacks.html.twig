@@ -8,6 +8,7 @@
                 <li>{{ quack.createdAT | date }}</li>
                 <li>{{ quack.contend }}</li>
             </ul>
+            <a onclick="return confirm('You sure')" href="{{ path('quack_delete', {quack:quack.id}) }}">Delete</a>
         </div>
     {% endfor %}
 
