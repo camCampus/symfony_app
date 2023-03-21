@@ -10,11 +10,6 @@ use Doctrine\ORM\Mapping as ORM;
 class Quack
 {
 
-    public function __construct()
-    {
-        $this->createdAt = new \DateTime();
-    }
-
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -22,9 +17,12 @@ class Quack
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $contend = null;
-
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $createdAt = null;
+    private ?\DateTimeInterface $createdAt;
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime();
+    }
 
     public function getId(): ?int
     {

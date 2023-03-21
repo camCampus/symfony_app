@@ -1,18 +1,38 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {% for quack in quacks_show %}
-        <div>
-            <ul>
-                <li>{{ quack.id }}</li>
-                <li>{{ quack.createdAT | date }}</li>
-                <li>{{ quack.contend }}</li>
-            </ul>
-            <a onclick="return confirm('You sure')" href="{{ path('quack_delete', {quack:quack.id}) }}">Delete</a>
-        </div>
-    {% endfor %}
+    <h1>Quack index</h1>
 
-    <form action="{{ path('app_createquack') }}" method="POST">
-        <button type="submit">ADD</button>
+    <table class="table w-2/4">
+        <thead>
+        <tr>
+            <th class="text-center">Id</th>
+            <th class="text-center">Contend</th>
+            <th class="text-center">Created_at</th>
+            <th class="text-center">actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for quack in quacks_show %}
+            <tr>
+                <td class="text-center">{{ quack.id }}</td>
+                <td class="text-center">{{ quack.contend }}</td>
+                <td class="text-center">{{ quack.createdAt ? quack.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td class="text-center">
+                    <a href="{{ path('quack_show', {'quack': quack.id}) }}" class="text-blue-700 p-1.5 hover:underline">show</a>
+                    <a onclick="return confirm('Confirm delete ?')" href="{{ path('quack_delete', {'quack': quack.id}) }}" class="text-red-700 p-1.5 hover:underline">delete</a>
+                    <a href="{{ path('quack_edit', {'quack': quack.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <form action="{{ path('quack_create') }}" method="POST">
+        <button type="submit" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">ADD NEW</button>
     </form>
 {% endblock %}
