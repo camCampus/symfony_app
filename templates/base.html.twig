@@ -13,7 +13,8 @@
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
     </head>
-    <body>
+    <body class="h-screen w-full overflow-hidden">
+    {{ include('nav/_nav.html.twig') }}
         {% block body %}{% endblock %}
     </body>
 </html>
