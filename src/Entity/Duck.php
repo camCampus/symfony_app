@@ -4,10 +4,13 @@ namespace App\Entity;
 
 use App\Repository\DuckRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: DuckRepository::class)]
+#[UniqueEntity('email')]
+#[UniqueEntity('duckName')]
 class Duck implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -32,6 +35,25 @@ class Duck implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 180)]
     private ?string $lastName = null;
+
+    #[ORM\Column(length: 180, unique: true)]
+    private ?string $duckName = null;
+
+    /**
+     * @return string|null
+     */
+    public function getDuckName(): ?string
+    {
+        return $this->duckName;
+    }
+
+    /**
+     * @param string|null $duckName
+     */
+    public function setDuckName(?string $duckName): void
+    {
+        $this->duckName = $duckName;
+    }
 
     /**
      * @return string|null
@@ -133,4 +155,5 @@ class Duck implements UserInterface, PasswordAuthenticatedUserInterface
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
     }
+
 }

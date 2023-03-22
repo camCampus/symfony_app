@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+
+    <div class="h-full w-full flex justify-center items-center">
+        <div class="h-fit min-h-[30vh] w-fit min-w-[300px] flex flex-col bg-white rounded-lg">
+            <div class="w-full h-[5vh] bg-blue-500 rounded-t-lg"></div>
+
+            <ul class="h-full w-full flex flex-col bg-white rounded-lg p-5">
+                <li>First name: {{ user.firstName }}</li>
+                <li>Last name: {{ user.lastName }}</li>
+                <li>Duck name: {{ user.duckName }}</li>
+                <li>Email: {{ user.email }}</li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}

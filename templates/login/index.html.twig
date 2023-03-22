@@ -7,9 +7,9 @@
         <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
     {% endif %}
     <div class="w-full h-full flex justify-center items-start mt-[10vh] ">
-        <form class="flex flex-col px-6 border border-black rounded-lg" action="{{ path('app_login') }}" method="POST">
-            <label for="authentication">Email: </label>
-            <input type="text" id="authentication" name="_authentication" value="{{ last_authentication }}">
+        <form class="flex flex-col px-6 border border-black rounded-lg" action="{{ path('app_login') }}" method="post">
+            <label for="username">Email: </label>
+            <input type="text" id="username" name="_username" value="{{ last_username}}">
 
             <label for="password">Password: </label>
             <input type="password" id="password" name="_password">
