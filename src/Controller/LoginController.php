@@ -9,7 +9,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class LoginController extends AbstractController
 {
-    #[Route('/login', name: 'app_login')]
+    #[Route('/app/login', name: 'app_duck_login')]
     public function index(AuthenticationUtils $authenticationUtils): Response
     {
         // get the login error if there is one
@@ -23,7 +23,7 @@ class LoginController extends AbstractController
         ]);
     }
 
-    #[Route('/logout', name: 'app_logout', methods: ['GET'])]
+    #[Route('app/logout', name: 'app_duck_logout', methods: ['GET'])]
     public function logout()
     {
     }
