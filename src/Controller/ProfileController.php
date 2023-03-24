@@ -71,8 +71,6 @@ class ProfileController extends AbstractController
             'GET',
             'https://random-d.uk/api/v2/random'
         );
-        $content = $response->toArray();
-
-        return $content;
+        return $response->toArray();
     }
 }
