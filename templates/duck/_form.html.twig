@@ -1,0 +1,33 @@
+
+<div class="w-2/4">
+    {{ form_start(form, {'attr': {'class':'bg-gray-300 shadow-md rounded px-8 pt-6 pb-8 mb-4'}}) }}
+    <div class="mb-4">
+        {{ form_errors(form.firstName, {'attr': { 'class':'mb-4 rounded-lg bg-red-100 py-5 px-6 text-base text-red-700' }}) }}
+        {{ form_label(form.firstName, 'First Name', {'attr': {'class':'block text-gray-700 text-sm font-bold mb-2'}}) }}
+        {{ form_widget(form.firstName, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}}) }}
+    </div>
+    <div class="mb-4">
+        {{ form_errors(form.lastName, {'attr': { 'class':'mb-4 rounded-lg bg-red-100 py-5 px-6 text-base text-red-700' }}) }}
+        {{ form_label(form.lastName, 'Last name', {'attr': {'class':'block text-gray-700 text-sm font-bold mb-2'}}) }}
+        {{ form_widget(form.lastName, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}}) }}
+    </div>
+    <div class="mb-4">
+        {{ form_errors(form.duckName, {'attr': { 'class':'mb-4 rounded-lg bg-red-100 py-5 px-6 text-base text-red-700' }}) }}
+        {{ form_label(form.duckName, 'Duck Name ', {'attr': {'class':'block text-gray-700 text-sm font-bold mb-2'}}) }}
+        {{ form_widget(form.duckName, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}}) }}
+    </div>
+    <div class="mb-4">
+        {{ form_errors(form.email, {'attr': { 'class':'mb-4 rounded-lg bg-red-100 py-5 px-6 text-base text-red-700' }}) }}
+        {{ form_label(form.email, 'Email', {'attr': {'class':'block text-gray-700 text-sm font-bold mb-2'}}) }}
+        {{ form_widget(form.email, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}}) }}
+    </div>
+    <div class="mb-4">
+        {{ form_errors(form.password, {'attr': { 'class':'mb-4 rounded-lg bg-red-100 py-5 px-6 text-base text-red-700' }}) }}
+        {{ form_label(form.password, 'Password', {'attr': {'class':'block text-gray-700 text-sm font-bold mb-2'}}) }}
+        {{ form_widget(form.password, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}}) }}
+    </div>
+    <div class="mb-4">
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">{{ button_label|default('Save') }}</button>
+    </div>
+    {{ form_end(form) }}
+</div>

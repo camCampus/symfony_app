@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <div class="w-full h-[5vh] flex justify-end items-center">
+        <a class="p-5" href="{{ path('app_profile_edit', {'id': duck.id}) }}">Edit</a>
+        <form class="px-5" method="post" action="{{ path('app_profile_delete', {'id': duck.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ duck.id) }}">
+            <button class="btn">Delete</button>
+        </form>
+    </div>
+    <div class="h-full w-full flex justify-center items-center">
+        <div class="h-1/2 w-1/4 flex flex-col bg-white rounded-lg">
+            <div class="w-full h-[300px] bg-blue-500 rounded-t-lg">
+            </div>
+            <div class="flex justify-center -mt-10">
+                <img class="h-[250px] w-[250px] rounded-full border-solid border-white border-2 -mt-3" src="{{ img['url'] }}">
+            </div>
+            <div class="h-full w-full flex justify-center items-center">
+                <ul class="h-full w-full flex flex-col justify-around items-center bg-white rounded-lg p-5">
+                    <li>First name: {{ duck.firstName }}</li>
+                    <li>Last name: {{ duck.lastName }}</li>
+                    <li>Duck name: {{ duck.duckName }}</li>
+                    <li>Email: {{ duck.email }}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
