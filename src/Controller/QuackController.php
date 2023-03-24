@@ -25,16 +25,24 @@ class QuackController extends AbstractController
         ]);
     }
 
-    #[Route('/', name: 'quack_create', methods: ['POST'])]
-    public function create(EntityManagerInterface $entityManager): Response
+    #[Route('/new', name: 'quack_create', methods: ['GET','POST'])]
+    public function create(EntityManagerInterface $entityManager, Request $request, QuackRepository $quackRepository): Response
     {
         $quack = new Quack();
-        $quack->setContend("new quack");
+        $form = $this->createForm(QuackType::class, $quack);
+        $form->handleRequest($request);
 
-        $entityManager->persist($quack);
-        $entityManager->flush();
+        if($form->isSubmitted() && $form->isValid()) {
+            $quackRepository->save($quack, true);
 
-        return $this->redirectToRoute('index');
+            return $this->redirectToRoute('index');
+        }
+
+        return $this->render('quack/new.html.twig', [
+            'quack' => $quack,
+            'form' => $form,
+        ]);
+
     }
 
     #[Route('/{quack}/delete', name: 'quack_delete')]

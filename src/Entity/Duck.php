@@ -39,6 +39,25 @@ class Duck implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 180, unique: true)]
     private ?string $duckName = null;
 
+    #[ORM\Column(length: 180)]
+    private ?string $profileImg = "undefined";
+
+    /**
+     * @return string|null
+     */
+    public function getProfileImg(): ?string
+    {
+        return $this->profileImg;
+    }
+
+    /**
+     * @param string|null $profileImg
+     */
+    public function setProfileImg(?string $profileImg): void
+    {
+        $this->profileImg = $profileImg;
+    }
+
     /**
      * @return string|null
      */

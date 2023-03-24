@@ -38,10 +38,13 @@ class DuckController extends AbstractController
             $data = $form->getData();
             $txtPassword = $data->getPassword();
             $data->setPassword($passwordHasher->hashPassword($duck, $txtPassword));
+            $duck->setProfileImg($this->fetchDuckImg()["url"]);
             $duckRepository->save($duck, true);
 
             return $this->redirectToRoute('app_duck_index', [], Response::HTTP_SEE_OTHER);
         }
+
+
 
         return $this->render('duck/new.html.twig', [
             'duck' => $duck,
@@ -88,5 +91,14 @@ class DuckController extends AbstractController
             'duck' => $duck,
             'form' => $form,
         ]);
+    }
+
+    private function fetchDuckImg(): array
+    {
+        $response = $this->client->request(
+            'GET',
+            'https://random-d.uk/api/v2/random'
+        );
+        return $response->toArray();
     }
 }

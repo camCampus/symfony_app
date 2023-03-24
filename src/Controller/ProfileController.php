@@ -16,10 +16,12 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 class ProfileController extends AbstractController
 {
 
-        private HttpClientInterface $client;
+    private HttpClientInterface $client;
+
     public function __construct(HttpClientInterface $client)
     {
         $this->client = $client;
+
     }
 
     #[Route('/board', name: 'app_profile_profileboard', methods: ['GET'])]
@@ -28,7 +30,6 @@ class ProfileController extends AbstractController
         $duck = $this->getUser();
         return $this->render('profile/profile.html.twig', [
             'duck' => $duck,
-            'img' => $this->fetchDuckImg(),
         ]);
     }
 
@@ -65,12 +66,6 @@ class ProfileController extends AbstractController
 
         return $this->redirectToRoute('index', [], Response::HTTP_SEE_OTHER);
     }
-    private function fetchDuckImg(): array
-    {
-        $response = $this->client->request(
-            'GET',
-            'https://random-d.uk/api/v2/random'
-        );
-        return $response->toArray();
-    }
+
+
 }
