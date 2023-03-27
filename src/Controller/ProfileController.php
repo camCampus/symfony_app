@@ -28,15 +28,26 @@ class ProfileController extends AbstractController
     public function profileBoard(): Response
     {
         $duck = $this->getUser();
+        $this->denyAccessUnlessGranted('ROLE_USER', $duck);
         return $this->render('profile/profile.html.twig', [
             'duck' => $duck,
         ]);
     }
 
+    #[Route('/{id}', name: 'app_profile_show', methods: ['GET'])]
+    public function show(Duck $duck): Response
+    {
+        $duck = $this->getUser();
+        $this->denyAccessUnlessGranted('ROLE_USER', $duck);
+        return $this->render('duck/show.html.twig', [
+            'duck' => $duck,
+        ]);
+    }
 
     #[Route('/{id}/edit', name: 'app_profile_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Duck $duck, DuckRepository $duckRepository, UserPasswordHasherInterface $passwordHasher): Response
     {
+
         $form = $this->createForm(DuckType::class, $duck);
         $form->handleRequest($request);
 

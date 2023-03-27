@@ -35,6 +35,9 @@ security:
     # - { path: ^/admin, roles: ROLE_ADMIN }
     # - { path: ^/profile, roles: ROLE_USER }
     - {path: '/profile/board', roles: ROLE_USER}
+    - {path: '/quacks/new', roles: ROLE_USER}
+    - {path: '/quacks/{quack}/edit', roles: ROLE_USER}
+    - {path: '/quacks/{quack}/delete', roles: ROLE_USER}
 #    - {path: '/duck', roles: ROLE_ADMIN}
 
 

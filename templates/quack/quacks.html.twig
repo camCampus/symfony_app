@@ -1,61 +1,55 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {#    <h1>Quack index</h1> #}
-
-    {#    <table class="table w-2/4"> #}
-    {#        <thead> #}
-    {#        <tr> #}
-    {#            <th class="text-center">Id</th> #}
-    {#            <th class="text-center">Contend</th> #}
-    {#            <th class="text-center">Created_at</th> #}
-    {#            <th class="text-center">actions</th> #}
-    {#        </tr> #}
-    {#        </thead> #}
-    {#        <tbody> #}
-    {#        {% for quack in quacks_show %} #}
-    {#            <tr> #}
-    {#                <td class="text-center">{{ quack.id }}</td> #}
-    {#                <td class="text-center">{{ quack.contend }}</td> #}
-    {#                <td class="text-center">{{ quack.createdAt ? quack.createdAt|date('Y-m-d H:i:s') : '' }}</td> #}
-    {#                <td class="text-center"> #}
-    {#                    <a href="{{ path('quack_show', {'quack': quack.id}) }}" class="text-blue-700 p-1.5 hover:underline">show</a> #}
-    {#                    <a onclick="return confirm('Confirm delete ?')" href="{{ path('quack_delete', {'quack': quack.id}) }}" class="text-red-700 p-1.5 hover:underline">delete</a> #}
-    {#                    <a href="{{ path('quack_edit', {'quack': quack.id}) }}">edit</a> #}
-    {#                </td> #}
-    {#            </tr> #}
-    {#        {% else %} #}
-    {#            <tr> #}
-    {#                <td colspan="4">no records found</td> #}
-    {#            </tr> #}
-    {#        {% endfor %} #}
-    {#        </tbody> #}
-    {#    </table> #}
-
-    {#    <form action="{{ path('quack_create') }}" method="POST"> #}
-    {#        <button type="submit" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">ADD NEW</button> #}
-    {#    </form> #}
-
-    <div class="w-full h-full m-auto mt-5 flex flex-col justify-self-center bg-blue-500">
-        <div class="h-fit w-fit bg-white">
+    <div class="w-full h-full m-auto mt-5 flex flex-col justify-self-center">
+        <div class="h-fit w-fit bg-white m-1">
             <a href="{{ path('quack_create') }}" class="p-8">New</a>
         </div>
 
         {# QUACK #}
         {% for quack in quacks_show %}
-        <div class="max-w-[800px] w-4/5 h-fit mr-auto ml-auto flex flex-col flex-wrap bg-white mt-5">
-            <div class="h-fit w-fit flex justify-around items-center m-3">
-                <div class=" h-fit w-fit rounded-lg p-0.5 border border-black">
-                    <img height="50px" width="50px"
-                         src="https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fclipart-library.com%2Fimages%2FzcXoqorgi.png&f=1&nofb=1&ipt=2aef2bd2c057d3565a8bf9d303ec21b71534d59709ffc45753a7bbefddb7a4d4&ipo=images">
+            <div class="max-w-[800px] w-4/5 h-fit mr-auto ml-auto flex flex-col flex-wrap bg-white mt-5 rounded bg-fuchsia-200">
+                <div class="h-fit w-full flex items-center m-3 ">
+                    <div class=" h-fit w-fit rounded-lg p-1.5 border border-gray-400">
+                        <img height="50px" width="50px"
+                             src="{{ quack.getDuck.profileImg }}">
+                    </div>
+                    <h2 class="items-start justify-self-start p-2 text-red-900"><a href="{{ path('app_profile_show', {'id': quack.duck.id}) }}">{{ quack.getDuck().getDuckName() }}</a></h2>
+                    <p class=" block">{{ quack.getCreatedAt().format('d/m/Y') }}</p>
+                    {% if app.user != null %}
+                        {% if app.user.id == quack.duck.id %}
+                            {{ include('quack/_delete_form.html.twig') }}
+                            <a href="{{ path('quack_edit', {'quack': quack.id}) }}">Edit</a>
+                        {% endif %}
+                    {% endif %}
                 </div>
-                <h2 class="items-start justify-self-start p-2">author</h2>
+                <div class="w-full h-fit border border-t-gray-400  p-2 bg-white">
+                    <h2>Message: </h2>
+                    <p class="mt-2">{{ quack.contend }}</p>
+                </div>
+                <div class="min-h-[8vh] w-full flex flex-col flex-wrap bg-gray-200">
+                    <div class="h-fit w-full flex justify-between">
+                        <h3 class="mt-2 p-1">Comments:</h3>
+                        <div class="h-fit w-fit p-2 flex items-center">
+                            {% if app.user != null %}
+                                <a class="h-fit w-fit block p-2 m-1 bg-gray-300 rounded"
+                                   href="{{ path('app_comment_new', {'quack_id': quack.getId()}) }}">Add Com</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% for comment in quack.getCommentsId() %}
+                        <div class="h-fit w-full flex flex-col justify-center">
+                            <p class="text-indigo-900">{{ comment.getAuthor() }}</p>
+                            <p class=" p-2 bg-white">{{ comment.getContent() }}</p>
+                            {% if app.user != null %}
+                                {% if app.user.id == comment.getDuck().getId() %}
+                                    {{ include('comment/_options.html.twig') }}
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
-            <div class="w-full h-fit border border-emerald-700 mt-2 p-5">
-                <h2>Message: </h2>
-                <p class="mt-2">{{ quack.contend }}</p>
-            </div>
-        </div>
         {% endfor %}
     </div>
 {% endblock %}
