@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Quack;
 use App\Form\QuackType;
+use App\Repository\DuckRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\QuackRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,34 +20,63 @@ class QuackController extends AbstractController
     public function index(EntityManagerInterface $entityManager): Response
     {
         $quacks = $entityManager->getRepository(Quack::class)->findAll();
-
+        dump($quacks);
         return $this->render('quack/quacks.html.twig', [
-            'quacks_show' => $quacks
+            'quacks_show' => $quacks,
         ]);
     }
 
-    #[Route('/', name: 'quack_create', methods: ['POST'])]
-    public function create(EntityManagerInterface $entityManager): Response
+    #[Route('/new', name: 'quack_create', methods: ['GET','POST'])]
+    public function create(EntityManagerInterface $entityManager, Request $request, QuackRepository $quackRepository): Response
     {
+
+        $duck = $this->getUser();
+        $this->denyAccessUnlessGranted('ROLE_USER', $duck);
+
         $quack = new Quack();
-        $quack->setContend("new quack");
+        $form = $this->createForm(QuackType::class, $quack);
+        $form->handleRequest($request);
 
-        $entityManager->persist($quack);
-        $entityManager->flush();
+        if($form->isSubmitted() && $form->isValid()) {
+            $quack->setDuck($duck);
+            $quackRepository->save($quack, true);
 
-        return $this->redirectToRoute('index');
+            return $this->redirectToRoute('index');
+        }
+
+        return $this->render('quack/new.html.twig', [
+            'quack' => $quack,
+            'form' => $form,
+        ]);
+
     }
 
-    #[Route('/{quack}/delete', name: 'quack_delete')]
-    public function delete(Quack $quack, QuackRepository $quackRepository): Response
+    #[Route('/{quack}/delete', name: 'quack_delete', methods: ['POST'])]
+    public function delete(Request $request, Quack $quack, QuackRepository $quackRepository): Response
     {
+        $duck = $this->getUser();
+        $this->denyAccessUnlessGranted('ROLE_USER', $duck);
+
+        $id = $request->get('quack');
+        $duckAuthor = $quackRepository->find($id)->getDuck();
+        $this->denyAccessUnlessGranted('delete', $duckAuthor);
+
         $quackRepository->remove($quack, true);
+
         return $this->redirectToRoute('index');
     }
 
     #[Route('/{quack}/edit', name: 'quack_edit',  methods: ['GET', 'POST'])]
     public function edit(Request $request, Quack $quack, QuackRepository $quackRepository): Response
     {
+        $duck = $this->getUser();
+        $this->denyAccessUnlessGranted('ROLE_USER', $duck);
+
+        $id = $request->get('quack');
+        $duckAuthor = $quackRepository->find($id)->getDuck();
+        $this->denyAccessUnlessGranted('edit', $duckAuthor);
+
+
         $form = $this->createForm(QuackType::class, $quack);
         $form->handleRequest($request);
 

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\DuckRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -38,6 +40,37 @@ class Duck implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 180, unique: true)]
     private ?string $duckName = null;
+
+    #[ORM\Column(length: 180)]
+    private ?string $profileImg = "undefined";
+
+    #[ORM\OneToMany(mappedBy: 'duck', targetEntity: Quack::class)]
+    private Collection $quacks;
+
+    #[ORM\OneToMany(mappedBy: 'duck', targetEntity: Comment::class)]
+    private Collection $comments;
+
+    public function __construct()
+    {
+        $this->quacks = new ArrayCollection();
+        $this->comments = new ArrayCollection();
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getProfileImg(): ?string
+    {
+        return $this->profileImg;
+    }
+
+    /**
+     * @param string|null $profileImg
+     */
+    public function setProfileImg(?string $profileImg): void
+    {
+        $this->profileImg = $profileImg;
+    }
 
     /**
      * @return string|null
@@ -154,6 +187,66 @@ class Duck implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return Collection<int, Quack>
+     */
+    public function getQuacks(): Collection
+    {
+        return $this->quacks;
+    }
+
+    public function addQuack(Quack $quack): self
+    {
+        if (!$this->quacks->contains($quack)) {
+            $this->quacks->add($quack);
+            $quack->setDuck($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuack(Quack $quack): self
+    {
+        if ($this->quacks->removeElement($quack)) {
+            // set the owning side to null (unless already changed)
+            if ($quack->getDuck() === $this) {
+                $quack->setDuck(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setDuck($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getDuck() === $this) {
+                $comment->setDuck(null);
+            }
+        }
+
+        return $this;
     }
 
 }

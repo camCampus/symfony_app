@@ -10,10 +10,19 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 #[Route('/duck')]
 class DuckController extends AbstractController
 {
+
+    private HttpClientInterface $client;
+
+    public function __construct(HttpClientInterface $client)
+    {
+        $this->client = $client;
+
+    }
     #[Route('', name: 'app_duck_index', methods: ['GET'])]
     public function index(DuckRepository $duckRepository): Response
     {
@@ -38,9 +47,10 @@ class DuckController extends AbstractController
             $data = $form->getData();
             $txtPassword = $data->getPassword();
             $data->setPassword($passwordHasher->hashPassword($duck, $txtPassword));
+            $duck->setProfileImg($this->fetchDuckImg()["url"]);
             $duckRepository->save($duck, true);
 
-            return $this->redirectToRoute('app_duck_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('duck/new.html.twig', [
@@ -88,5 +98,14 @@ class DuckController extends AbstractController
             'duck' => $duck,
             'form' => $form,
         ]);
+    }
+
+    private function fetchDuckImg(): array
+    {
+        $response = $this->client->request(
+            'GET',
+            'https://random-d.uk/api/v2/random'
+        );
+        return $response->toArray();
     }
 }
