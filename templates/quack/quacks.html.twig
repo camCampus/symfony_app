@@ -14,7 +14,9 @@
                         <img height="50px" width="50px"
                              src="{{ quack.getDuck.profileImg }}">
                     </div>
-                    <h2 class="items-start justify-self-start p-2 text-red-900"><a href="{{ path('app_profile_show', {'id': quack.duck.id}) }}">{{ quack.getDuck().getDuckName() }}</a></h2>
+                    <h2 class="items-start justify-self-start p-2 text-red-900"><a
+                                href="{{ path('app_profile_show', {'duck_id': quack.duck.id}) }}">{{ quack.getDuck().getDuckName() }}</a>
+                    </h2>
                     <p class=" block">{{ quack.getCreatedAt().format('d/m/Y') }}</p>
                     {% if app.user != null %}
                         {% if app.user.id == quack.duck.id %}
@@ -44,6 +46,8 @@
                             {% if app.user != null %}
                                 {% if app.user.id == comment.getDuck().getId() %}
                                     {{ include('comment/_options.html.twig') }}
+                                {% elseif app.user.id == comment.getQuackId().getDuck().getId() %}
+                                    {% include('comment/_delete_form.html.twig') %}
                                 {% endif %}
                             {% endif %}
                         </div>

@@ -7,7 +7,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class DuckListVoter extends Voter
+class UserVoter extends Voter
 {
     public function __construct(
         private Security $security
@@ -15,14 +15,15 @@ class DuckListVoter extends Voter
     {
     }
 
-    const ROLE = 'ROLE_ADMIN';
+    const USER = 'ROLE_USER';
+
 
     /**
      * @inheritDoc
      */
     protected function supports(string $attribute, mixed $subject): bool
     {
-        if (!in_array($attribute, [self::ROLE])) {
+        if (!in_array($attribute, [self::USER])) {
             return false;
         }
         if (!$subject instanceof Duck) {
@@ -36,7 +37,7 @@ class DuckListVoter extends Voter
      */
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
     {
-        if (in_array($subject->getRoles(), [self::ROLE])) {
+        if (in_array($subject->getRoles(), [self::USER])) {
             return true;
         }
         return false;

@@ -6,6 +6,7 @@ use App\Entity\Comment;
 use App\Entity\Quack;
 use App\Form\CommentType;
 use App\Repository\CommentRepository;
+use App\Repository\DuckRepository;
 use App\Repository\QuackRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -48,10 +49,12 @@ class CommentController extends AbstractController
 
 
     #[Route('/{id}/edit', name: 'app_comment_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Comment $comment, CommentRepository $commentRepository): Response
+    public function edit(Request $request, Comment $comment, CommentRepository $commentRepository, DuckRepository $duckRepository): Response
     {
         $duck = $this->getUser();
         $this->denyAccessUnlessGranted('ROLE_USER', $duck);
+
+        $this->denyAccessUnlessGranted('edit', $commentRepository->find($request->get('id'))->getDuck());
 
         $form = $this->createForm(CommentType::class, $comment);
         $form->handleRequest($request);
@@ -59,7 +62,7 @@ class CommentController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $commentRepository->save($comment, true);
 
-            return $this->redirectToRoute('app_comment_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('comment/edit.html.twig', [
@@ -69,15 +72,17 @@ class CommentController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_comment_delete', methods: ['POST'])]
-    public function delete(Request $request, Comment $comment, CommentRepository $commentRepository): Response
+    public function delete(Request $request, Comment $comment, CommentRepository $commentRepository, DuckRepository $duckRepository): Response
     {
         $duck = $this->getUser();
         $this->denyAccessUnlessGranted('ROLE_USER', $duck);
+
+        $this->denyAccessUnlessGranted('is_author',  $commentRepository->find($comment));
 
         if ($this->isCsrfTokenValid('delete'.$comment->getId(), $request->request->get('_token'))) {
             $commentRepository->remove($comment, true);
         }
 
-        return $this->redirectToRoute('app_comment_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('index', [], Response::HTTP_SEE_OTHER);
     }
 }

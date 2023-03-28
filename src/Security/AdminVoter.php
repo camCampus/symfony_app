@@ -7,7 +7,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class QuackVoter extends Voter
+class AdminVoter extends Voter
 {
     public function __construct(
         private Security $security
@@ -15,7 +15,7 @@ class QuackVoter extends Voter
     {
     }
 
-    const ROLE = 'ROLE_USER';
+    const ROLE = 'ROLE_ADMIN';
 
     /**
      * @inheritDoc

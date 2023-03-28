@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Quack;
 use App\Form\QuackType;
+use App\Repository\DuckRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\QuackRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -31,6 +32,7 @@ class QuackController extends AbstractController
 
         $duck = $this->getUser();
         $this->denyAccessUnlessGranted('ROLE_USER', $duck);
+
         $quack = new Quack();
         $form = $this->createForm(QuackType::class, $quack);
         $form->handleRequest($request);
@@ -49,12 +51,18 @@ class QuackController extends AbstractController
 
     }
 
-    #[Route('/{quack}/delete', name: 'quack_delete')]
-    public function delete(Quack $quack, QuackRepository $quackRepository): Response
+    #[Route('/{quack}/delete', name: 'quack_delete', methods: ['POST'])]
+    public function delete(Request $request, Quack $quack, QuackRepository $quackRepository): Response
     {
         $duck = $this->getUser();
         $this->denyAccessUnlessGranted('ROLE_USER', $duck);
+
+        $id = $request->get('quack');
+        $duckAuthor = $quackRepository->find($id)->getDuck();
+        $this->denyAccessUnlessGranted('delete', $duckAuthor);
+
         $quackRepository->remove($quack, true);
+
         return $this->redirectToRoute('index');
     }
 
@@ -63,6 +71,11 @@ class QuackController extends AbstractController
     {
         $duck = $this->getUser();
         $this->denyAccessUnlessGranted('ROLE_USER', $duck);
+
+        $id = $request->get('quack');
+        $duckAuthor = $quackRepository->find($id)->getDuck();
+        $this->denyAccessUnlessGranted('edit', $duckAuthor);
+
 
         $form = $this->createForm(QuackType::class, $quack);
         $form->handleRequest($request);

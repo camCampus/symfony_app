@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <div class="h-full w-full flex justify-center items-center">
+        <div class="h-1/2 w-1/4 flex flex-col bg-white rounded-lg">
+            <div class="w-full h-[300px] bg-blue-500 rounded-t-lg">
+            </div>
+            <div class="flex justify-center -mt-10">
+                <img class="h-[250px] w-[250px] rounded-full border-solid border-white border-2 -mt-3" src="{{ duckProfile.profileImg }}">
+            </div>
+            <div class="h-full w-full flex justify-center items-center">
+                <ul class="h-full w-full flex flex-col justify-around items-center bg-white rounded-lg p-5">
+                    <li>Duck name: {{ duckProfile.duckName }}</li>
+                    <li>Quacks : {{ quacks }}</li>
+                    <li>Comments : {{ comments }}</li>
+                    <li>Likes : </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}

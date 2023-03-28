@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Duck;
 use App\Form\DuckType;
+use App\Repository\CommentRepository;
 use App\Repository\DuckRepository;
+use App\Repository\QuackRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,24 +31,41 @@ class ProfileController extends AbstractController
     {
         $duck = $this->getUser();
         $this->denyAccessUnlessGranted('ROLE_USER', $duck);
+
         return $this->render('profile/profile.html.twig', [
             'duck' => $duck,
         ]);
     }
 
-    #[Route('/{id}', name: 'app_profile_show', methods: ['GET'])]
-    public function show(Duck $duck): Response
+    #[Route('/{duck_id}', name: 'app_profile_show', methods: ['GET'])]
+    public function show(Request $request, DuckRepository $duckRepository, QuackRepository $quackRepository, CommentRepository $commentRepository): Response
     {
         $duck = $this->getUser();
         $this->denyAccessUnlessGranted('ROLE_USER', $duck);
-        return $this->render('duck/show.html.twig', [
-            'duck' => $duck,
+
+        $duckProfile = $duckRepository->find($request->get('duck_id'));
+        $quacks = $quackRepository->findBy(array('duck' => $duckProfile->getId()));
+        $quacks = count($quacks);
+
+        $comments = $commentRepository->findBy(array('duck' => $duckProfile->getId()));
+        $comments = count($comments);
+
+        dump($quacks);
+        return $this->render('profile/show.html.twig', [
+            'duckProfile' => $duckProfile,
+            'quacks' => $quacks,
+            'comments' => $comments
         ]);
     }
 
     #[Route('/{id}/edit', name: 'app_profile_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Duck $duck, DuckRepository $duckRepository, UserPasswordHasherInterface $passwordHasher): Response
     {
+
+        $duck = $this->getUser();
+        $this->denyAccessUnlessGranted('ROLE_USER', $duck);
+
+        $this->denyAccessUnlessGranted('edit', $duckRepository->find($request->get('id')));
 
         $form = $this->createForm(DuckType::class, $duck);
         $form->handleRequest($request);
@@ -71,7 +90,13 @@ class ProfileController extends AbstractController
     #[Route('/{id}', name: 'app_profile_delete', methods: ['POST'])]
     public function delete(Request $request, Duck $duck, DuckRepository $duckRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$duck->getId(), $request->request->get('_token'))) {
+
+        $duck = $this->getUser();
+        $this->denyAccessUnlessGranted('ROLE_USER', $duck);
+
+        $this->denyAccessUnlessGranted('delete', $duckRepository->find($request->get('id')));
+
+        if ($this->isCsrfTokenValid('delete' . $duck->getId(), $request->request->get('_token'))) {
             $duckRepository->remove($duck, true);
         }
 
