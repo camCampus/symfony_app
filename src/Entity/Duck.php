@@ -2,6 +2,9 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use App\Repository\DuckRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -9,42 +12,58 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: DuckRepository::class)]
 #[UniqueEntity('email')]
 #[UniqueEntity('duckName')]
+#[ApiResource(
+    operations: [
+        new Get(normalizationContext: ['groups' => 'duck:item']),
+        new GetCollection(normalizationContext: ['groups' => 'duck:list'])
+    ],
+    paginationClientEnabled: false
+)]
 class Duck implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['duck:item', 'duck:list'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
     #[ORM\Column]
+
     private array $roles = [];
 
     /**
      * @var string The hashed password
      */
     #[ORM\Column]
+
     private ?string $password = null;
 
     #[ORM\Column(length: 180)]
+        #[Groups(['duck:item', 'duck:list'])]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 180)]
+        #[Groups(['duck:item', 'duck:list'])]
     private ?string $lastName = null;
 
     #[ORM\Column(length: 180, unique: true)]
+        #[Groups(['duck:item', 'duck:list'])]
     private ?string $duckName = null;
 
     #[ORM\Column(length: 180)]
+        #[Groups(['duck:item', 'duck:list'])]
     private ?string $profileImg = "undefined";
 
     #[ORM\OneToMany(mappedBy: 'duck', targetEntity: Quack::class)]
+        #[Groups(['duck:item', 'duck:list'])]
     private Collection $quacks;
 
     #[ORM\OneToMany(mappedBy: 'duck', targetEntity: Comment::class)]
