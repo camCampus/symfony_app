@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Duck;
 use App\Entity\Quack;
 use App\Form\QuackType;
 use App\Repository\DuckRepository;
@@ -98,5 +99,13 @@ class QuackController extends AbstractController
         return $this->render('quack/show.html.twig', [
             'quack' => $quack
         ]);
+    }
+
+
+    #[Route('/search', name: 'app_quack_searchquack', methods: ['POST'])]
+    public function searchQuack(Request $request, DuckRepository $duckRepository): Response
+    {
+        dd($request);
+        return $this->render('index');
     }
 }

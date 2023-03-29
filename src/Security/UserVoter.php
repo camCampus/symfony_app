@@ -23,7 +23,7 @@ class UserVoter extends Voter
      */
     protected function supports(string $attribute, mixed $subject): bool
     {
-        if (!in_array($attribute, [self::USER])) {
+        if ($attribute != self::USER) {
             return false;
         }
         if (!$subject instanceof Duck) {
@@ -37,7 +37,7 @@ class UserVoter extends Voter
      */
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
     {
-        if (in_array($subject->getRoles(), [self::USER])) {
+        if ($subject->getRoles() == self::USER) {
             return true;
         }
         return false;

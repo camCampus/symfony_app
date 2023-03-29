@@ -62,6 +62,7 @@ class DuckController extends AbstractController
     #[Route('/{id}', name: 'app_duck_show', methods: ['GET'])]
     public function show(Duck $duck): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN',  $this->getUser());
         return $this->render('duck/show.html.twig', [
             'duck' => $duck,
         ]);
@@ -70,6 +71,8 @@ class DuckController extends AbstractController
     #[Route('/{id}', name: 'app_duck_delete', methods: ['POST'])]
     public function delete(Request $request, Duck $duck, DuckRepository $duckRepository): Response
     {
+
+        $this->denyAccessUnlessGranted('ROLE_ADMIN',  $this->getUser());
         if ($this->isCsrfTokenValid('delete'.$duck->getId(), $request->request->get('_token'))) {
             $duckRepository->remove($duck, true);
         }
@@ -80,6 +83,8 @@ class DuckController extends AbstractController
     #[Route('/{id}/edit', name: 'app_duck_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Duck $duck, DuckRepository $duckRepository, UserPasswordHasherInterface $passwordHasher): Response
     {
+
+        $this->denyAccessUnlessGranted('ROLE_ADMIN',  $this->getUser());
         $form = $this->createForm(DuckType::class, $duck);
         $form->handleRequest($request);
 

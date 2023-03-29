@@ -4,10 +4,10 @@
             <h2 class="block w-fit px-4">DUCK&DUCK</h2>
             <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn2.iconfinder.com%2Fdata%2Ficons%2Fanimals-nature-2%2F50%2F1F986-duck-1024.png&f=1&nofb=1&ipt=7239296f43563a15206129c3333bb0da5225f0a21dac462e8757c98613d32b36&ipo=images" height="80px" width="80px">
         </div>
-        <div>
-            <form action="" method="post">
+        <div class="h-full w-fit flex flex-wrap grow-2 justify-center items-center">
+            <form class="h-full w-full flex justify-center items-center" action="{{ path('app_quack_searchquack') }}" method="post">
                 <input name="search" type="text" id="search" placeholder="..." class="border border-black">
-                <input type="submit">
+                <input class="h-fit w-fit block p-2 m-1 bg-gray-300 rounded" type="submit" value="Search">
             </form>
         </div>
             <ul class="flex justify-around flex-nowrap w-2/4 items-center">

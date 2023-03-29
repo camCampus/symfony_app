@@ -29,19 +29,18 @@ class ProfileController extends AbstractController
     #[Route('/board', name: 'app_profile_profileboard', methods: ['GET'])]
     public function profileBoard(): Response
     {
-        $duck = $this->getUser();
-        $this->denyAccessUnlessGranted('ROLE_USER', $duck);
+        $this->denyAccessUnlessGranted('ROLE_USER',  $this->getUser());
 
         return $this->render('profile/profile.html.twig', [
-            'duck' => $duck,
+            'duck' => $this->getUser(),
         ]);
     }
 
     #[Route('/{duck_id}', name: 'app_profile_show', methods: ['GET'])]
     public function show(Request $request, DuckRepository $duckRepository, QuackRepository $quackRepository, CommentRepository $commentRepository): Response
     {
-        $duck = $this->getUser();
-        $this->denyAccessUnlessGranted('ROLE_USER', $duck);
+
+        $this->denyAccessUnlessGranted('ROLE_USER',  $this->getUser());
 
         $duckProfile = $duckRepository->find($request->get('duck_id'));
         $quacks = $quackRepository->findBy(array('duck' => $duckProfile->getId()));
@@ -50,7 +49,6 @@ class ProfileController extends AbstractController
         $comments = $commentRepository->findBy(array('duck' => $duckProfile->getId()));
         $comments = count($comments);
 
-        dump($quacks);
         return $this->render('profile/show.html.twig', [
             'duckProfile' => $duckProfile,
             'quacks' => $quacks,
@@ -62,10 +60,9 @@ class ProfileController extends AbstractController
     public function edit(Request $request, Duck $duck, DuckRepository $duckRepository, UserPasswordHasherInterface $passwordHasher): Response
     {
 
-        $duck = $this->getUser();
-        $this->denyAccessUnlessGranted('ROLE_USER', $duck);
+        $this->denyAccessUnlessGranted('ROLE_USER',  $this->getUser());
 
-        $this->denyAccessUnlessGranted('edit', $duckRepository->find($request->get('id')));
+        $this->denyAccessUnlessGranted('delete', $duck);
 
         $form = $this->createForm(DuckType::class, $duck);
         $form->handleRequest($request);
@@ -88,13 +85,11 @@ class ProfileController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_profile_delete', methods: ['POST'])]
-    public function delete(Request $request, Duck $duck, DuckRepository $duckRepository): Response
+    public function delete(Request $request, Duck $duck,  DuckRepository $duckRepository): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_USER',  $this->getUser());
 
-        $duck = $this->getUser();
-        $this->denyAccessUnlessGranted('ROLE_USER', $duck);
-
-        $this->denyAccessUnlessGranted('delete', $duckRepository->find($request->get('id')));
+        $this->denyAccessUnlessGranted('delete', $duck);
 
         if ($this->isCsrfTokenValid('delete' . $duck->getId(), $request->request->get('_token'))) {
             $duckRepository->remove($duck, true);
