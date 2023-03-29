@@ -80,4 +80,16 @@ class DuckRepository extends ServiceEntityRepository implements PasswordUpgrader
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+
+    /**
+     * @return Duck[]
+     */
+    public function findByDuckName(string $search): array
+    {
+        $query = $this->createQueryBuilder('q');
+        $query->where($query->expr()->like('q.duckName', ':search'))
+            ->setParameter('search', '%'.$search.'%');
+        return $query->getQuery()->getResult();
+    }
 }

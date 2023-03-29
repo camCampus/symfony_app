@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Duck;
 use App\Entity\Quack;
 use App\Form\QuackType;
 use App\Repository\DuckRepository;
@@ -16,29 +17,45 @@ use Symfony\Component\Routing\Annotation\Route;
 class QuackController extends AbstractController
 {
 
-    #[Route('/', name: 'index', methods: ['GET'])]
-    public function index(EntityManagerInterface $entityManager): Response
+    #[Route('/', name: 'index', methods: ['GET', 'POST'])]
+    public function index(Request $request, EntityManagerInterface $entityManager, DuckRepository $duckRepository): Response
     {
-        $quacks = $entityManager->getRepository(Quack::class)->findAll();
+        $quacks = [];
+        $search = $request->get('search');
+
+        if ($search != null) {
+            $searchResult = $duckRepository->findByDuckName($search);
+            if (count($searchResult) != 0 || $searchResult != null) {
+                foreach ($searchResult as $author) {
+                    foreach ($author->getQuacks()->getValues() as $value)
+                    {
+                        $quacks[] = $value;
+                    }
+                }
+            }
+        } else {
+            $quacks = $entityManager->getRepository(Quack::class)->findAll();
+        }
+
         dump($quacks);
         return $this->render('quack/quacks.html.twig', [
             'quacks_show' => $quacks,
+            'search' => $search
         ]);
     }
 
-    #[Route('/new', name: 'quack_create', methods: ['GET','POST'])]
+    #[Route('/new', name: 'quack_create', methods: ['GET', 'POST'])]
     public function create(EntityManagerInterface $entityManager, Request $request, QuackRepository $quackRepository): Response
     {
 
-        $duck = $this->getUser();
-        $this->denyAccessUnlessGranted('ROLE_USER', $duck);
+        $this->denyAccessUnlessGranted('ROLE_USER', $this->getUser());
 
         $quack = new Quack();
         $form = $this->createForm(QuackType::class, $quack);
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()) {
-            $quack->setDuck($duck);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $quack->setDuck($this->getUser());
             $quackRepository->save($quack, true);
 
             return $this->redirectToRoute('index');
@@ -54,33 +71,27 @@ class QuackController extends AbstractController
     #[Route('/{quack}/delete', name: 'quack_delete', methods: ['POST'])]
     public function delete(Request $request, Quack $quack, QuackRepository $quackRepository): Response
     {
-        $duck = $this->getUser();
-        $this->denyAccessUnlessGranted('ROLE_USER', $duck);
 
-        $id = $request->get('quack');
-        $duckAuthor = $quackRepository->find($id)->getDuck();
-        $this->denyAccessUnlessGranted('delete', $duckAuthor);
+        $this->denyAccessUnlessGranted('ROLE_USER', $this->getUser());
+        $this->denyAccessUnlessGranted('delete', $quack->getDuck());
 
         $quackRepository->remove($quack, true);
 
         return $this->redirectToRoute('index');
     }
 
-    #[Route('/{quack}/edit', name: 'quack_edit',  methods: ['GET', 'POST'])]
+    #[Route('/{quack}/edit', name: 'quack_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Quack $quack, QuackRepository $quackRepository): Response
     {
-        $duck = $this->getUser();
-        $this->denyAccessUnlessGranted('ROLE_USER', $duck);
 
-        $id = $request->get('quack');
-        $duckAuthor = $quackRepository->find($id)->getDuck();
-        $this->denyAccessUnlessGranted('edit', $duckAuthor);
+        $this->denyAccessUnlessGranted('ROLE_USER', $this->getUser());
+        $this->denyAccessUnlessGranted('edit', $quack->getDuck());
 
 
         $form = $this->createForm(QuackType::class, $quack);
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $quackRepository->save($quack, true);
 
             return $this->redirectToRoute('index');
@@ -92,11 +103,12 @@ class QuackController extends AbstractController
         ]);
     }
 
-    #[Route('/{quack}', name:'quack_show', methods: ['GET'])]
+    #[Route('/{quack}', name: 'quack_show', methods: ['GET'])]
     public function show(Quack $quack): Response
     {
         return $this->render('quack/show.html.twig', [
             'quack' => $quack
         ]);
     }
+
 }

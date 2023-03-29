@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Comment;
+use App\Entity\Duck;
 use App\Entity\Quack;
 use App\Form\CommentType;
 use App\Repository\CommentRepository;
@@ -49,9 +50,8 @@ class CommentController extends AbstractController
 
 
     #[Route('/{id}/edit', name: 'app_comment_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Comment $comment, CommentRepository $commentRepository, DuckRepository $duckRepository): Response
+    public function edit(Request $request, Duck $duck, Comment $comment, CommentRepository $commentRepository, DuckRepository $duckRepository): Response
     {
-        $duck = $this->getUser();
         $this->denyAccessUnlessGranted('ROLE_USER', $duck);
 
         $this->denyAccessUnlessGranted('edit', $commentRepository->find($request->get('id'))->getDuck());

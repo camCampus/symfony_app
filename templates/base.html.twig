@@ -1,20 +1,24 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn2.iconfinder.com%2Fdata%2Ficons%2Fanimals-nature-2%2F50%2F1F986-duck-1024.png&f=1&nofb=1&ipt=7239296f43563a15206129c3333bb0da5225f0a21dac462e8757c98613d32b36&ipo=images">
-        {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
-        {% endblock %}
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    <link rel="icon"
+          href="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn2.iconfinder.com%2Fdata%2Ficons%2Fanimals-nature-2%2F50%2F1F986-duck-1024.png&f=1&nofb=1&ipt=7239296f43563a15206129c3333bb0da5225f0a21dac462e8757c98613d32b36&ipo=images">
+    {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('app') }}
+    {% endblock %}
 
-        {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
-        {% endblock %}
-    </head>
-    <body class="h-full w-full min-h-screen">
-    {{ include('nav/_nav.html.twig') }}
-        {% block body %}{% endblock %}
-    </body>
+    {% block javascripts %}
+        {{ encore_entry_script_tags('app') }}
+    {% endblock %}
+</head>
+<body class="h-full w-full min-h-screen relative">
+{{ include('nav/_nav.html.twig') }}
+{{ include('nav/_co.html.twig') }}
+{% block body %}
+{% endblock %}
+
+</body>
 </html>
