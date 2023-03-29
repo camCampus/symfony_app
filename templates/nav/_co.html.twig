@@ -1,0 +1,9 @@
+{% block co %}
+    <div class="h-fit w-fit flex flex-col rounded bg-white sticky p-5 top-0 left-[100vw] z-10 mt-5 mr-2">
+        {% if app.user != null %}
+            <img class="rounded" src="{{ app.user.profileImg }}" height="100px" width="100px">
+            <h2 class="">{{ app.user.duckName }}</h2>
+            <a href="{{ path('app_duck_logout') }}">Logout</a>
+        {% endif %}
+    </div>
+{% endblock %}
