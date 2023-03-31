@@ -8,9 +8,14 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: QuackRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: [
+        'groups' => ['quack:read'],
+    ]
+)]
 class Quack
 {
 
@@ -24,6 +29,7 @@ class Quack
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createdAt;
 
+    #[Groups(['quack:read'])]
     #[ORM\OneToMany(mappedBy: 'quack_id', targetEntity: Comment::class)]
     private Collection $comments_id;
 
